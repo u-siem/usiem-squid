@@ -1,4 +1,6 @@
-# usiem-squid
+![Rust](https://github.com/u-siem/usiem-squid/workflows/Rust/badge.svg?branch=main)
+
+# uSIEM Squid Proxy
 uSIEM Squid web proxy parser
 
 Supports Squid and SquidGuard.
