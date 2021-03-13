@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+
 create_log_dir() {
   mkdir -p ${SQUID_LOG_DIR}
   chmod -R 755 ${SQUID_LOG_DIR}
@@ -23,6 +24,10 @@ elif [[ ${1} == squid || ${1} == $(which squid) ]]; then
   EXTRA_ARGS="${@:2}"
   set --
 fi
+
+# Launch lighttpd to serve squid log files
+$(which lighttpd) -f /etc/lighttpd/lighttpd.conf
+
 
 # default behaviour is to launch squid
 if [[ -z ${1} ]]; then

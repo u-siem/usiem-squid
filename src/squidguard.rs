@@ -83,6 +83,11 @@ pub fn parse_log(log: SiemLog) -> Result<SiemLog, LogParsingError> {
         Err(_) => return Err(LogParsingError::ParserError(log)),
     };
 
+    let (url_path, url_query) = match url.find("?") {
+        Some(pos) => (Some(url[..pos].to_string()), Some(url[pos..].to_string())),
+        None => (Some(url.to_string()),None)
+    };
+
     let user_name = match log_parsed.get(3) {
         Some(user) => {
             match *user {
@@ -142,6 +147,18 @@ pub fn parse_log(log: SiemLog) -> Result<SiemLog, LogParsingError> {
         }
         Err(_) => {}
     }
+    match url_path {
+        Some(val) => {
+            log.add_field(field_dictionary::URL_PATH, SiemField::Text(Cow::Owned(val)));
+        },
+        None => {}
+    };
+    match url_query {
+        Some(val) => {
+            log.add_field(field_dictionary::URL_QUERY, SiemField::Text(Cow::Owned(val)));
+        },
+        None => {}
+    };
 
     return Ok(log);
 }
@@ -167,7 +184,8 @@ pub fn rule_category(text: &str) -> WebProxyRuleCategory {
         "downloads" => WebProxyRuleCategory::P2P,
         "drugs" => WebProxyRuleCategory::Marijuana,
         "dynamic" => WebProxyRuleCategory::DynamicDNSHost,
-        "education/schools" => WebProxyRuleCategory::Education,
+        "schools" => WebProxyRuleCategory::Education,
+        "education" => WebProxyRuleCategory::Education,
         "fortunetelling" => WebProxyRuleCategory::AlternativeSpirituality,
         "forum" => WebProxyRuleCategory::Forums,
         "gamble" => WebProxyRuleCategory::Gambling,
@@ -180,27 +198,30 @@ pub fn rule_category(text: &str) -> WebProxyRuleCategory {
         "jobsearch" => WebProxyRuleCategory::JobSearch,
         "library" => WebProxyRuleCategory::Education,
         "military" => WebProxyRuleCategory::Military,
-        "movies" => WebProxyRuleCategory::Education,
-        "music" => WebProxyRuleCategory::P2P,
+        "movies" => WebProxyRuleCategory::VideoStreams,
+        "music" => WebProxyRuleCategory::AudioVideoClips,
         "news" => WebProxyRuleCategory::News,
         "podcasts" => WebProxyRuleCategory::RadioAudioStreams,
         "politics" => WebProxyRuleCategory::PoliticalAdvocacy,
         "porn" => WebProxyRuleCategory::Pornography,
         "radiotv" => WebProxyRuleCategory::RadioAudioStreams,
-        "recreation/humor" => WebProxyRuleCategory::HumorJokes,
-        "recreation/martialarts" => WebProxyRuleCategory::Sports,
-        "recreation/restaurants" => WebProxyRuleCategory::Restaurants,
-        "recreation/sports" => WebProxyRuleCategory::Sports,
-        "recreation/travel" => WebProxyRuleCategory::Travel,
-        "recreation/wellness" => WebProxyRuleCategory::Health,
+        "humor" => WebProxyRuleCategory::HumorJokes,
+        "martialarts" => WebProxyRuleCategory::Sports,
+        "restaurants" => WebProxyRuleCategory::Restaurants,
+        "sports" => WebProxyRuleCategory::Sports,
+        "travel" => WebProxyRuleCategory::Travel,
+        "wellness" => WebProxyRuleCategory::Health,
+        "recreation" => WebProxyRuleCategory::Entertainment,
         "redirector" => WebProxyRuleCategory::URLShorteners,
         "religion" => WebProxyRuleCategory::Religion,
         "remotecontrol" => WebProxyRuleCategory::RemoteAccess,
         "ringtones" => WebProxyRuleCategory::InternetTelephony,
-        "science/astronomy" => WebProxyRuleCategory::Education,
-        "science/chemistry" => WebProxyRuleCategory::Education,
+        "astronomy" => WebProxyRuleCategory::Education,
+        "science" => WebProxyRuleCategory::Education,
+        "chemistry" => WebProxyRuleCategory::Education,
         "searchengines" => WebProxyRuleCategory::SearchEngines,
-        "sex/lingerie" => WebProxyRuleCategory::IntimateApparel,
+        "lingerie" => WebProxyRuleCategory::IntimateApparel,
+        "sex" => WebProxyRuleCategory::SexualExpression,
         "shopping" => WebProxyRuleCategory::Shopping,
         "socialnet" => WebProxyRuleCategory::SocialNetworking,
         "spyware" => WebProxyRuleCategory::MaliciousSources,

@@ -111,7 +111,7 @@ pub fn parse_log(log: SiemLog) -> Result<SiemLog, LogParsingError> {
         rule_name: None,
         rule_category: None,
         user_name,
-        outcome: parse_outcome(squid_code),
+        outcome: parse_outcome(squid_code,http_code),
     }));
     match log_parsed[1].parse::<u64>() {
         Ok(v) => {
@@ -123,7 +123,10 @@ pub fn parse_log(log: SiemLog) -> Result<SiemLog, LogParsingError> {
     return Ok(log);
 }
 
-pub fn parse_outcome(text: &str) -> WebProxyOutcome {
+pub fn parse_outcome(text: &str, http_code : u32) -> WebProxyOutcome {
+    if http_code >= 300 || http_code < 200{
+        return WebProxyOutcome::BLOCK
+    }
     match text {
         "NONE" => WebProxyOutcome::BLOCK,
         _ => WebProxyOutcome::ALLOW,
