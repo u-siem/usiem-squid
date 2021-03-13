@@ -1,6 +1,6 @@
 [package]
 name = "u-siem-squid"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Samuel Garcés <samuel.garces@protonmail.com>"]
 license = "MIT"
 description = "uSIEM Squid proxy parser"
