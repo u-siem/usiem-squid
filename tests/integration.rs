@@ -12,6 +12,7 @@ fn test_squid_integration() {
     if out_dir == "" {
         return;
     }
+    println!("Starting CI/CD test");
     let client = reqwest::blocking::Client::builder()
         .proxy(reqwest::Proxy::http("http://127.0.0.1:3128").unwrap())
         .build()
